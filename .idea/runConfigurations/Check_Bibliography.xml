@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Check Bibliography" type="BashConfigurationType" factoryName="Bash" singleton="true">
+    <module name="Paper-NanoJ-Fluidics" />
+    <option name="INTERPRETER_OPTIONS" value="bash" />
+    <option name="INTERPRETER_PATH" value="/usr/bin/env" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_DIR$/out" />
+    <option name="PARENT_ENVS" value="true" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/_checkBibliography.sh" />
+    <option name="PARAMETERS" value="" />
+    <method />
+  </configuration>
+</component>

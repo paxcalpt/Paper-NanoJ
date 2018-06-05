@@ -1,0 +1,105 @@
+% Please give the surname of the lead author for the running footer
+\leadauthor{Tosheva \& Laine}
+
+% info about NM-BC format: https://www.nature.com/nmeth/about/content
+
+\title{NanoJ: a high-performance open-source super-resolution microscopy toolbox for ImageJ}
+%NM-BC: The title is limited to 10 words (or 90 characters)
+\shorttitle{NanoJ}
+
+% Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
+\author[1,2\space *]{Kalina L. Tosheva}
+\author[1-3\space *]{Romain F. Laine}
+\author[1,2,4]{Nils Gustafsson}
+\author[1,2,4]{Robert D. M. Gray}
+\author[1,2]{Pedro Almada}
+\author[1]{?Jason Mercer?}
+\author[5]{Christophe Leterrier}
+\author[1-3\space\Letter]{Pedro M. Pereira}
+\author[1-3\space\Letter]{Si\^{a}n Culley}
+\author[1-3\space\Letter]{Ricardo Henriques}
+
+\affil[1]{MRC-Laboratory for Molecular Cell Biology. University College London, London, UK}
+\affil[2]{Department of Cell and Developmental Biology, University College London, London, UK}
+\affil[3]{The Francis Crick Institute, London, UK}
+\affil[4]{Centre for Mathematics and Physics in Life Sciences and Experimental Biology (CoMPLEX), University College London, London, UK}
+\affil[5]{Aix Marseille Université, CNRS, INP UMR7051, Marseille, France}
+\affil[6]{London Centre for Nanotechnology, London, UK}
+\affil[7]{Institute for the Physics of Living Systems, University College London, London, UK}
+
+\affil[*]{Equal contributing authors}
+
+\maketitle
+
+%TC:break Abstract
+\begin{abstract}
+%Lets try to keep the abstract between 70-150 words, I have noticed no guidance
+With the advances in digital microscopy, researchers now have access to a wealth of computational approaches in order to quantify their imaging data. In particular, quantification of colocalization, movement dynamics and structural analysis based on models have become central to fluorescence microscopy. However, researchers are now confronted with choosing between the numerous packages for image quantification. Over the recent years, our lab has built a self-contained framework of image analysis packages with a focus on live-cell super-resolution microscopy, which we called NanoJ, with reference to the popular ImageJ software it is part of. Here, we highlight
+the capabilities of using NanoJ at every step of microscopy studies from the image acquisition (NanoJ-Fluidics), artefact correction of the raw data (drift correction, multi-channel alignment) to super-resolution image reconstruction (SRRF), image quality assessment (SQUIRREL) and modelling (NanoJ-VirusMapper) in a single well-established framework.
+
+\end {abstract}
+%TC:break main
+%the command above serves to have a word count for the abstract
+
+\begin{keywords}
+    ImageJ | Fiji | Super-Resolution Microscopy | Image Analysis
+\end{keywords}
+
+\begin{corrauthor}
+    p.pereira\at ucl.ac.uk, s.culley\at ucl.ac.uk, r.henriques\at ucl.ac.uk
+\end{corrauthor}
+
+%%%%%%%%%%%%%%%%
+% Introduction %
+%%%%%%%%%%%%%%%%
+% ------------------------------------------------------------------------------------------------------------------------------------
+
+\subsection*{Introduction}
+% RL and RH 500 words max
+\Blindtext
+
+\subsection*{Sample manipulation while imaging}
+% this section is about pumpy (PMP, ask Christophe if he has another 5 colour pumpy dataset), 500 words max
+\Blindtext
+
+\subsection*{Image data preparation}
+% this section is about drift-correction and channel alignment (?David channel realignment? images?, drift-correction?), 500 words max
+\Blindtext
+
+\subsection*{Super-Resolution analysis and rendering}
+% this section is about SRRF, Romain, 500 words max
+\Blindtext
+
+\subsection*{Super-Resolution quality control}
+% this section is about SQUIRREL-ErrorMapping and FRC, Sian, 500 words max
+\Blindtext
+
+\subsection*{Super-Resolution data analysis}
+% this section is about VirusMapper, Rob + images of archaea and viruses?, 500 words max
+\Blindtext
+
+\subsection*{Discussion and Future Perspectives}
+% KT 500 words max
+\Blindtext
+
+% ------------------------------------------------------------------------------------------------------------------------------------
+\subsection*{Software and Hardware Availability}
+NanoJ-Fluidics follows open-source software and hardware standards, it is part of the NanoJ project \cite{gustafsson2016fast, culley2018quantitative,gray2016virusmapper}. The steps to assemble a complete functioning system are described in \href{https://github.com/HenriquesLab/NanoJ-Fluidics/wiki}{https://github.com/HenriquesLab/NanoJ-Fluidics/wiki}. 
+
+\begin{acknowledgements}
+    We thank Prof. Ralf Jungmann at Max Planck Institute of Biochemistry Munich for reagents and advice. This work was funded by grants from the UK Biotechnology and Biological Sciences Research Council (BB/M022374/1; BB/P027431/1; BB/R000697/1) (R.H., P.M.P. and R.F.L.), the UK Medical Research Council (MR/K015826/1) (R.H.), the Wellcome Trust (203276/Z/16/Z) (S.C. and R.H.) and the Centre National de la Recherche Scientifique (CNRS ATIP-AVENIR program AO2016) (C.L.). P.A. was supported by a PhD fellowship from the UK’s Biotechnology and Biological Sciences Research Council. C.L.D. was supported by PhD funding from the Medical Research Council, UK (1214605). Research by B.B. was supported by UCL, Cancer Research UK (C1529/A17343), and MRC (MC\_CF12266).K.L.T. is supported
+    by a 4-year MRC Research Studentship.
+\end{acknowledgements}
+
+
+\begin{contributions}
+    P.A. and R.H. devised the hardware and wrote the software. P.A., P.M.P., C.L. and R.H. planned experiments. Experimental data sets were acquired by P.M.P. (Fig. \ref{fig:LiveToFix}), G.C, F.B.R. and C.L. (Fig. \ref{fig:PAINT}), P.A. and C.L.D. (Fig. \ref{fig:Dix}). Data was analysed by P.A., P.M.P. and S.C. while G.C., B.B., C.L. and R.H. provided research advice. The paper was written by P.A. P.M.P., R.F.L., C.L. and R.H. with editing contributions of all the authors.
+\end{contributions}
+
+\begin{interests}
+    The authors declare no competing financial interests.
+\end{interests}
+
+\section*{Bibliography}
+\bibliographystyle{zHenriquesLab-StyleBib}
+\bibliography{06_Bibliography_Clean}

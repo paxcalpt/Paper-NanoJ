@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build Paper" type="BashConfigurationType" factoryName="Bash" singleton="true">
+    <module name="Paper-NanoJ-Fluidics" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="INTERPRETER_PATH" value="/bin/sh" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+    <option name="PARENT_ENVS" value="true" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/_buildPaper.sh" />
+    <option name="PARAMETERS" value="" />
+    <method />
+  </configuration>
+</component>
