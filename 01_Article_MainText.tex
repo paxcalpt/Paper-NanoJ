@@ -3,7 +3,7 @@
 
 % info about NM-BC format: https://www.nature.com/nmeth/about/content
 
-\title{NanoJ: a high-performance open-source super-resolution microscopy toolbox for ImageJ}
+\title{NanoJ: a high-performance open-source super-resolution microscopy toolbox}
 %NM-BC: The title is limited to 10 words (or 90 characters)
 \shorttitle{NanoJ}
 
@@ -13,7 +13,8 @@
 \author[1,2,4]{Nils Gustafsson}
 \author[1,2,4]{Robert D. M. Gray}
 \author[1,2]{Pedro Almada}
-\author[1]{?Jason Mercer?}
+\author[1]{David Albrecht}
+\author[1]{Jason Mercer}
 \author[5]{Christophe Leterrier}
 \author[1-3\space\Letter]{Pedro M. Pereira}
 \author[1-3\space\Letter]{Si\^{a}n Culley}
@@ -34,7 +35,8 @@
 %TC:break Abstract
 \begin{abstract}
 %Lets try to keep the abstract between 70-150 words, I have noticed no guidance
-With the advancement of digital microscopy, researchers now have access to a wealth of computational approaches for image data acquisition and analysis. This has allowed findings based on molecular quantification,  dynamics, colocalisation and structure modelling to become central to fluorescence microscopy. In the field of super-resolution microscopy in particular, image processing tools are indispensable due to the particular nature of raw data recording in these methods. However, researchers are now confronted with choosing between the numerous available packages for image processing. Over the recent years, our lab has built a self-contained framework of image analysis software with a focus on live-cell super-resolution microscopy, which we called NanoJ, a reference to the popular ImageJ software it was developed for. Here, we highlight the capabilities of using NanoJ at every step of microscopy studies from the image acquisition (NanoJ-Fluidics), artefact correction of the raw data (drift correction, multi-channel alignment) to super-resolution image reconstruction (SRRF), image quality assessment (SQUIRREL) and modelling (NanoJ-VirusMapper) in a single well-established framework.
+
+Super-Resolution Microscopy has become essential for the study of many nanoscale biological processes. The field generally relies on specialised image processing tools to routinely process the large volumes of recorded data and robustly extract underlying quantitative information. In recent years, our team has built an image analysis framework for Super-Resolution Microscopy which combines high-performance, open-source and ease-of use, which we called NanoJ - a reference to the popular ImageJ software it was developed for. In this paper, we highlight the current capabilities of NanoJ for use in several essential steps of microscopy studies: spatio-temporal alignment of the raw data (NanoJ-Core), Super-Resolution image reconstruction (NanoJ-SRRF), image quality assessment (NanoJ-SQUIRREL), structural modelling (NanoJ-VirusMapper) and control of the sample environment (NanoJ-Fluidics). We are constantly expanding NanoJ with the aim to improve quantitative analysis and reliability of biomedical microscopy studies .
 
 \end {abstract}
 %TC:break main
@@ -54,40 +56,117 @@ With the advancement of digital microscopy, researchers now have access to a wea
 % ------------------------------------------------------------------------------------------------------------------------------------
 
 \subsection*{Introduction}
-% RL and RH 500 words max
-  Fluorescence microscopy has become ubiquitously used in biological studies since its conception in the 20\textsuperscript{th} century. The advancement of the technique now allows researchers to quantify the dynamic behaviour and interactions of specifically labelled molecules and observe the structures they form in living cells. In recent years, super-resolution microscopy has further expanded the toolbox of light microscopy techniques by increasing the detection precision of existing methods down to the single molecule level. However, extracting biologically relevant quantitative information from any type of fluorescence microscopy raw data requires specialised post-processing software.
-  \newline
-  Here, we present NanoJ, a highly versatile set of digital tools developed to aid in multiple steps of both image acquisition and analysis, with particular focus on the demands of live-cell super-resolution imaging. It is available as a series of ImageJ-based plugins which can be used individually or concomitantly to obtain high-quality, artefact-free images and extract quantitative and qualitative information from them. While developed for specific biological questions, NanoJ is aimed at broad applications, thus it is compatible with data acquired with a multitude of microscope setups and experimental workflows. It is open-source, user-friendly and individual modules have written manuals making it an accessible tool for both non-expert users as well as developers.
-  NanoJ comprises of general tools, which include drift correction and channel realignment, and specialised algorithms for multi-modular image acquisition and advanced processing. In the following sections, we will briefly describe each of these modalities and demonstrate their application with relevant example data.
+  Fluorescence microscopy has been ubiquitously used in biological studies since its invention in the 20\textsuperscript{th} century. It underpins most research aiming at observing structures and interactions between specifically labelled molecules, allowing the quantification of their dynamic behaviour in living cells. In recent years, Super-Resolution Microscopy (SRM) emerged from decades of imaging studies at the single-molecule level and has dramatically expanded the toolbox of fluorescence microscopy. However, extracting biologically relevant quantitative information from any type of fluorescence microscopy data typically requires specialised digital processing and analysis. Additionally, the increasing amount of data generated by SRM in particular, highlights the need for high-performance image analysis packages.  Several great SRM image processing packages are available such as ThunderSTORM \cite{ovesny2014thunderstorm}, LAMA \cite{Malkusch2016LAMA} or SIMcheck \cite{schermelleh2015simcheck} but these are focused on a specific type of SRM modality.
   
-\subsection*{Sample manipulation while imaging}
-% this section is about pumpy (PMP, ask Christophe if he has another 5 colour pumpy dataset), 500 words max
-\Blindtext
+  Here we present NanoJ, a highly versatile set of image analysis and acquisition methods developed to aid researchers at many stages of microscopy studies, with a particular focus on the demands of live-cell SRM. NanoJ is available as a series of ImageJ-based plugins which can be used individually or concomitantly to obtain high-fidelity images from which qualitative and quantitative information can be extracted. NanoJ is comprised of (see Fig. \ref{fig:GeneralDiagram}): \textbf{NanoJ-Core} - a set of general image correction tools, which include drift correction and channel realignment, both based on cross-correlation analysis; \textbf{NanoJ-SRRF} - an analytic approach able to extract super-resolution data from a short burst sequence of images that can be acquired with most microscopes \cite{gustafsson2016fast,culley2018srrf}; \textbf{NanoJ-SQUIRREL} - an algorithm to evaluate resolution and the presence of artefacts in super-resolution images \cite{culley2018quantitative}; \textbf{NanoJ-VirusMapper} - a Single-Particle Analysis method to generate nanoscale models of repetitive meta-stable biological structures \cite{gray2016virus,gray2017}, such as viruses \cite{gray2018nanoscale}; \textbf{NanoJ-Fluidics} - a software interface to control simple fluidic hardware devices, enabling automation e.g. of \multiplexing experiments \cite{almada2018automating}. While some of these methods were originally developed to address specific biological questions, NanoJ is aimed at solving common imaging problems with broad applications and, thus, is compatible with a multitude of fluorescence microscope setups and experimental protocols. 
+ 
+  
+%TC:ignore
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/Figure1_v2.png}
+    \caption{\textbf{NanoJ framework} NanoJ consists of hardware interface, general microscopy tools and advanced reconstruction software.}
+    \label{fig:GeneralDiagram}
+\end{figure}
+%TC:endignore
+  
+\subsection*{The NanoJ framework}
+NanoJ has been designed to integrate with the popular ImageJ or Fiji image analysis software \cite{abramoff2004image,schindelin2012fiji}, being easily installed as a standard set of plugins. NanoJ is fully open-source and user-friendly, making use of state-of-the-art algorithms and code execution strategies. The graphical user interfaces (GUIs) are designed to be straightforward to use and its functionality can be easily controlled through the ImageJ macro language.
 
-\subsection*{Image data preparation}
-% this section is about drift-correction and channel alignment (?David channel realignment? images?, drift-correction?), 500 words max
-\Blindtext
+It is broken down as individual modules with corresponding manuals making it an accessible tool for both non-expert users, as well as developers. It is developed in both Java (\href{https://www.java.com/}{https://www.java.com/}) and OpenCL (\href{https://www.khronos.org/opencl}{https://www.khronos.org/opencl}), the latter language being used for high-performance analysis of image data through the use of Graphical Processing Units (GPUs). As of date, it encompasses four Java ARchive (JAR) packages - NanoJ-SRRF, NanoJ-SQUIRREL, NanoJ-VirusMapper, NanoJ-Fluidics - that all depend on a central package - NanoJ-Core - which contains the libraries that enable high-performance GPU-based computing analysis and a large set of basic image analysis helper methods. The modular nature of NanoJ means that its components can be updated independently, and the framework can be easily extended by appending new analytic packages. Furthermore, as part of the NanoJ-Core module, we make a number of benchmarking routines available, capable to explore the image analysis capabilities (in particular via GPU processing) of the analysis machine used.
 
+\subsection*{NanoJ-Core: Drift Correction}
+ During the acquisition of a SRM data there is often a need for the sample to remain static in order to minimise motion blur artefacts and therefore loss of resolution. However, drift commonly occurs in microscopes during acquisition times, often as a result of gradual changes in temperature of system components. While most modern microscopes have an active focus-lock device that stabilises the motion of the sample in the axial direction (focal drift), the sample will still be prone to lateral movement. However, in the case where the raw data is made up of a sequence of consecutive frames acquired rapidly, as is common in SRM methods such as Single Molecule Localization Microscopy (SMLM) \cite{betzig2006imaging,rust2006sub} or Fluctuation Imaging-type approaches \cite{gustafsson2016fast,dertinger2009fast,cox2012bayesian}, this lateral drift can be calculated and analytically corrected via post-processing.
 
-\subsection*{Super-Resolution analysis and rendering}
+ The lateral drift in an image at a particular time frame can be assumed to be linear and therefore can be estimated by calculating the cross-correlation matrix (CCM) between a reference frame and the frame at this particular time point. The location of the peak intensity in the CCM determines the linear shift between the two images and is precisely estimated by upscaling the CCM, using a bicubic-spline interpolation, thus achieving subpixel accuracy. Depending on the type of acquisition, the reference frame can either be the first frame of the raw data (for a fixed sample for instance) or the preceding SRM frame (for a live sample). For SMLM datasets with sparse blinking, there will only be a weak correlation across frames, as there is little observable structure conserved between time points. One common strategy to alleviate this low correlation is to add fiduciary landmarks to the sample, such as static fluorescent beads. Alternatively, NanoJ offers an additional analytical methods which consists of temporally binning the dataset, thus increasing the correlation between binned frames and allowing their shift to be precisely estimated \cite{mlodzianoski2011sample}. 
+
+ NanoJ breaks the task of drift correction into the distinct parts of estimation and then translation. Once drift is estimated, the dataset can be directly corrected by analytically translating each individual frame using a bicubic-spline interpolation. The interpolation process will however change the noise properties of the resulting dataset \cite{blaysat2016effect}.
+
+ Drift estimation in NanoJ differentiates from other strategies applied by other SRM algorithms, such as ThunderSTORM \cite{ovesny2014thunderstorm}, by the fact that it analyses originally acquired unprocessed data, instead of post-processed Super-Resolution reconstructions. This allows the estimation to be decoupled from the Super-Resolution analysis strategy used, thus enabling further methods such as SRRF or SOFI \cite{dertinger2009fast} to benefit from it. Alternatively, algorithms such as NanoJ-SRRF can import the created drift-table, directly using this information during analysis without the need to pre-translate each frame.   
+
+\subsection*{NanoJ-Core: Channel Alignment}
+
+%TC:ignore
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/ChannelRealignment_v1.png}
+    \caption{\textbf{NanoJ - Channel alignment} Coolio. It's stuff in there !}
+    \label{fig:ChannelAlignment}
+\end{figure}
+%TC:endignore
+
+ Images captured with a fluorescence microscope in different spectral channels often appear misaligned, as a result of chromatic aberrations in the optical systems and from using different spectral filters between the channels. While in diffraction-limited microscopy both of these effects can often be ignored, provided they occur at a scale smaller than the diffraction limit, their effect can become substantial in the context of SRM. Even optical components, such as microscope objectives, labelled as corrected for this effect will have limited performance. This leads to an increasingly perceivable discrepancy between spatial structures observed in different spectral channels as resolution increases \cite{erdelyi2013correcting}. It is essential to correct this spectral misalignment in multi-colour SRM studies, especially when it involves the quantification of colocalisation between different structures \cite{bock2007two,van2009multicolor}. Thereby, channel realignment becomes an imperative part of image analysis at these scales because even a channel offset of ten's of nanometres can affect the outcome of the study. Additionally, the shift between different spectral channels often varies non-linearly with the position in the image across the image, which prevents using typical cross-correlation-based approaches, such as the one used by NanoJ-Core Drift Correction.
+ A common approach to estimate the shift is to image a sample showing the same structure across all the relevant wavelength channels, where this structure occupies a large portion of the imaged field-of-view, e.g. a coverslip with a high-density of randomly placed multi-spectral beads. This dataset can be used to extract a non-linear spatial transform for each spectral channel with respect to a reference channel, and these transforms can then be used to re-align all further multi-spectral dataset \cite{arganda2006consistent,annibale2012identification}. Because the correction necessary here is spatially varying across the image, NanoJ takes the approach of breaking the image down into small areas, which are in turn compared to the equivalent area in the reference channel. Locally, the correction can be assumed to be linear and the linear shift can be estimated by finding the cross-correlation peak position as described in the "Drift Correction" section. An inverse distance weighting interpolation \cite{shepard1968two} is used to smoothly determine shift values across the whole field-of-view, including the areas that do not contain any structure. This approach allows us to extract a shift map (in both vertical and horizontal directions) that can be applied to further datasets. The shift maps can be visualised where the intensity in each pixel represents the vertical or horizontal shift associated to the local shift for the corresponding channel (Fig. X). These shift maps have the benefit of easily showing the chromatic distortion across the field-of-view (Fig. X), helping with the assessment of the image quality. 
+ 
+ The channel alignment correction is then achieved on any multi-color dataset by creating a new image representing each channel, where the intensity value for each pixel coordinate corresponds to the intensity value from the original image at the equivalent coordinate corrected for local shift. For the cases where these coordinates are not discrete, a bicubic-spline interpolation is used to recover pixel values in continuous space. Because the shift map can be extrapolated to continuous space, the alignment procedure obtained from diffraction-limited images can also easily be used to correct SRM dataset of any resolution.
+
+ Additionally, in some cases where clear individual overlapping structures are present, NanoJ provides a channel alignment solution which can be directly evaluated and performed on the dataset of interest, therefore simplifying the analysis workflow. See Figure (xxx)
+
+\subsection*{NanoJ-SRRF: Live-Cell Super-Resolution Imaging compatible with a large range of microscopes}
+ As part of the NanoJ framework, we include our recently developed SRM reconstruction algorithm called Super-Resolution Radial Fluctuations (SRRF), able to extract sub-diffraction information from a short burst of images acquired at high-speed with modern fluorescence microscopes \cite{gustafsson2016fast,culley2018srrf}. SRRF is a pure based analytical approach, compared to other SRM methods, it alleviates the need to use toxic photoswitching-inducing buffers \cite{henriques2011palm}, specialised fluorophores \cite{dempsey2011evaluation,henriques2009palm}, damaging high-intensity illumination \cite{waldchen2015light} or specialised equipment \cite{gustafsson2000surpassing,hell1994breaking}.
+ 
+ SRRF is based on similar principles to SMLM, however it does not rely on the detection of spatio-temporally isolated fluorophore. In comparison, SRRF generates a magnified pixel grid where each pixel value relates to the probability of fluorophores existing in that corresponding region of space. To do so, SRRF calculates the local radial symmetry around each of these pixels, which will be high when a point-spread-function (PSF) profile transiently becomes dominant. The fluctuation of local radial symmetries follows the underlying natural intensity fluctuation of fluorophores, which has a distinct temporal signature to that of noise \cite{dertinger2009fast}. A temporal correlation of radial symmetries at each pixel can then be projected into a final image, where the structures of interest can be better resolved.
+ 
+ Practically, a typical SRRF image is generated by analysing $\sim$100 frames imaged at 100Hz, using an acquired image pixel size of $\sim$100nm. These values are generally a good estimate to achieve a high-quality SRRF image. They should however be optimised for each sample, in order to improve both image quality and resolution. Optimally, the pixel size should match the Nyquist criterion for the objective and wavelength detected \cite{pawley2010handbook}, the frame-rate needs to be sufficiently high to temporally sample fluorophore oscillations, and the number of frames collected sufficient for SRRF to accurately represent structure distinct from noise. 
+ 
+ NanoJ-SRRF, the software implementation of the SRRF algorithm, uses whenever possible GPU high-performance computing to accelerate the radial symmetry estimation. This is achieved by implementing a large set of the needed SRRF calculations in OpenCL, with a fallback of execution to the CPU using standard Java when a compatible graphics card is not found. NanoJ-SRRF can use a drift-table as an additional input, dynamically using its values to compensate for unwanted sample drift during the calculation of radial symmetries and temporal correlations.
+
+\subsection*{NanoJ-SQUIRREL: Calculating Image Quality}
+
+blabla
+
+\subsection*{NanoJ-SQUIRREL: Calculating Image Resolution}
+
+blabla
+
+\subsection*{Super-Resolution reconstruction}
 % this section is about SRRF, Romain, 500 words max
-\Blindtext
+As part of our effort to push the limit of live-cell super-resolution microscopy, we developed an analytical approach that allows an increase in resolution without the requirement for toxic buffers  (ref SMLM), damaging high-intensity illumination (ref STED, SMLM) or specialised equipment (SIM, STED ref) from a sufficient number of frames (typically ~100 frames) acquired in a live sample \cite{gustafsson2016fast}. Our method, called SRRF for Super-resolution radial fluctuation, requires  illumination in the and is compatible with all microscopy modality with high resolution \cite{culley2018srrf}. 
+
+
+%TC:ignore
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/Figure4_v1.png}
+    \caption{\textbf{NanoJ - SRRF and SQUIRREL} (a) SRRF analysis on live Cos7 cells expressing UtrCH-GFP imaged every 30 ms and reconstructed every 100 frames (3s time interval between super-resolved images). Scale bar: 20 \textmu{}m. (b) SQUIRREL analysis of STORM imaging of spectrin labelled with AlexaFluor 647 in neurons. Scale bar: 20 \textmu{}m. WF: wide-field.}
+    \label{fig:SRRF&SQUIRREL}
+\end{figure}
+%TC:endignore
+
+Panel (a) of Figure \ref{fig:SRRF&SQUIRREL} shows the resolution improvement achievable with a typical live-cell experiments, here Cos7 cells with actin labelling. The raw data was acquired with an exposure time of 30 ms and therefore allowed for a temporal resolution of 3s / super-resolved image without any visible phototoxicity or photobleaching to the cell. Yo, can you please fix the contrast for the SRRF images to be the same as for the diff lim ones? Otherwise, to the naked eye, the SRRF ones look uglier...-Kalina
+
+
+\subsection*{NanoJ-Fluidics: Sample manipulation during imaging}
+% this section is about pumpy (PMP, ask Christophe if he has another 5 colour pumpy dataset), 500 words max
+We strive to develop the tools necessary for microscopy to be as robust and effective as possible when studying biological systems. This includes developing open-source hardware that is highly enabling for the microscopy community. With this concept in mind, we developed NanoJ-Fluidics (aka "Pumpy McPumpface") \cite{almada2018automating}, an automated fluidics system for \textit{in situ} treatment of the sample. Figure \ref{fig:Pumpy} shows how automated fluid exchange allows the measurement of a 5-color single-molecule localization microscopy (SMLM) of a single fixed cell. Here, a combination of  STORM (Stochastic Optical Reconstruction Microscopy) \cite{rust2006sub, heilemann2008subdiffraction} and DNA-PAINT (DNA- Point Accumulation for Imaging Nanoscale Topography) \cite{sharonov2006wide, jungmann2014multiplexed} modalities was utilised.
+
+Here, the NanoJ platform integrates the hardware control of the fluidics pumps and interface with  microscopy acquisition through the popular MicroManager platform \cite{edelstein2010computer}. 
+
+%TC:ignore
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/Figure2_v2.png}
+    \caption{\textbf{NanoJ-Fluidics} NanoJ-Fluidics allows for automated buffer and sample treatment exchange. (a) Imaging scheme. (b) A single pump from NanoJ-Fluidics. (c) 5-color SMLM imaging obtained on an individual cell.}
+    \label{fig:Pumpy}
+\end{figure}
+%TC:endignore
+
 
 \subsection*{Super-Resolution quality control}
-% this section is about SQUIRREL-ErrorMapping and FRC, Sian, 500 words max
-\Blindtext
+Although super-resolution microscopy has proven to be very powerful in many fields of biology, they are nevertheless prone to artefacts.These artefacts typically come from biases or non-linearities at the stage of image reconstruction. For single-molecule localization microscopy (SMLM) for instance, local high density of emitters can cause bridge artefacts or missing structures \cite{burgert2015artifacts}. In general, all super-resolution microscopy based on analytical approaches suffer from artefacts. We are addressing this issue by developing an algorithm capable of highlighting the presence of artefacts in a super-resolution image by comparing it to its non-super-resolved equivalent. Our method, termed SQUIRREL for super-resolution quantitative image rating and reporting of error locations, was developed as an open-source and simple-to-use software as part of the NanoJ framework. 
+In panel (b) of \ref{fig:SRRF&SQUIRREL}, we show the SQUIRREL analysis of a STORM image obtained from a spectrin-labelled axon. The corresponding wide-field image is shown along with the error map. The bright regions in the error map indicate areas in the image where artefacts may have occurred: here, at the junction of several axons the density of emitters was excessively high, leading to a number of emitters being missed by the localization algorithm and therefore an equivalently dimmer image in the super-resolution modality. 
+SQUIRREL helps users of SRM of all level of experience identify artefacts and optimise image  reconstruction protocols.
 
-\subsection*{Super-Resolution data analysis}
+% more details about FRC and RSE here would be intersting if space is not an issue.
+
+
+\subsection*{Quantification of super-resolution microscopy data}
 % this section is about VirusMapper, Rob + images of archaea and viruses?, 500 words max
-Further to providing information on the quality of SR images, NanoJ includes the analytical tool for extracting quantitative structural informationm,called VirusMapper  \cite{gray2016virus,gray2017}. It is the first freely available algorithm which employs high-throughput single particle analysis (SPA) to SR data. Multiple copies of a specific structure can be imaged in a single field of view using SR microscopy and fed into the program to extract an accurate structural model. Thereby, VirusMapper can automatically detect, segment, align, classify and average out thousands of individual instances of this structure based on cross correlation similarity. Notably, the precision of the method of tens of nanometers is sufficient to distinguish nanoscopic changes between separate populations of the same structure under different biological conditions, as was previously demonstrated for the vaccinia protein L4, a constituent of the viral inner core, in free and membrane-bound virus particles \cite{gray2016virus}. For obtaining of multi-component models, VirusMapper can process multicolour SR images, enabling alignment between different structures in the same complex with a precision down to a few nanometers. We illustrate this with models obtained from super-resolution images of two proteins in three distinct parts of vaccinia virus - … (Fig a - Rob). 
-\newline
-Although it was initially developed for the study of viruses, VirusMapper’s generalised SPA approach and unbiased analysis makes it applicable to any organism, provided a sufficient conservation between copies of the detected structure exist. Here, we showcase this with using Furthermore, raw data can be obtained by using a variety of labelling strategies and imaging modalities, making the algorithm broadly compatible with any type of SR method. To demonstrate both of these properties, we additionally modelled the structure of the division ring of the archea Sulfolobus, obtained from (…) images (Fig b - Gabriel). 
-
-(Conclusion and how it ties in with rest of NanoJ)
+Further to providing information on the quality of SR images, NanoJ includes an analytical method for extracting quantitative structural information, called VirusMapper (3, 4).  It is the first freely available algorithm which employs high-throughput single particle analysis (SPA) to SR data and uses cross-correlation approaches to extract structural models from it. Multiple copies of a specific structure can be imaged in a single field of view using various SR microscopy methods and fed into the program which then automatically detects, segments, aligns, classifies and averages out thousands of individual instances of the structure to create an accurate model. Furthermore, VirusMapper can process multi-colour SR images, enabling alignment between different structures in the same complex with a precision down to a few nanometers. Here, we illustrate this with models obtained from SR-images of proteins in three distinct parts of vaccinia virus - . . . (Fig a - Rob). Although it was initially developed for the study of viruses, VirusMapper’s generalised SPA approach and unbiased analysis makes it applicable to any organism, provided a sufficient conservation between copies of the detected structure exist. Additionally, raw data for quantification using VirusMapper can be obtained by using a variety of labelling strategies. To showcase both of these properties, we modelled for the first time the structure of the division ring of the archea Sulfolobus with improved resolution (Fig b -Gabriel’s stuff). In summary, the unbiased approach of VirusMapper allows for extraction of quantitative information from SR images acquired in a diverse of ways,  making the algorithm broadly compatible with any type of SR method.
 
 \subsection*{Discussion and Future Perspectives}
-% KT 500 words max
-\Blindtext
+Our NanoJ framework provides a novel and unique set of comprehensive tools and is continuously being supported, adapted and expanded to include new approaches. It supports researchers all the way along the experimental pathway, from data acquisition and protocol optimisation down to the structural quantification of image data. 
+Importantly, NanoJ highlights the common pitfalls of image analysis such as drift correction, channel alignment and assessment of image quality (artefacts and resolution). We believe that by making these tools accessible to the widest research community, our efforts support the objective interpretation of imaging data.
 
 % ------------------------------------------------------------------------------------------------------------------------------------
 \subsection*{Software and Hardware Availability}
