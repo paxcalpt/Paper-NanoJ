@@ -10,7 +10,7 @@
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
 \author[1,2\space *]{Kalina L. Tosheva}
 \author[1-3\space *]{Romain F. Laine}
-\author[1,2,4]{Nils Gustafsson}
+%\author[1,2,4]{Nils Gustafsson}
 \author[1,2,4]{Robert D. M. Gray}
 \author[1,2]{Pedro Almada}
 \author[1]{David Albrecht}
@@ -39,7 +39,7 @@
 \begin{abstract}
 %Lets try to keep the abstract between 70-150 words, I have noticed no guidance
 
-Super-Resolution Microscopy has become essential for the study of many nanoscale biological processes. The field generally relies on specialised image processing tools to routinely process the large volumes of recorded data and robustly extract underlying quantitative information. In recent years, our team has built an image analysis framework for Super-Resolution Microscopy which combines high-performance, open-source and ease-of use, which we called NanoJ - a reference to the popular ImageJ software it was developed for. In this paper, we highlight the current capabilities of NanoJ for use in several essential steps of microscopy studies: spatio-temporal alignment of the raw data (NanoJ-Core), Super-Resolution image reconstruction (NanoJ-SRRF), image quality assessment (NanoJ-SQUIRREL), structural modelling (NanoJ-VirusMapper) and control of the sample environment (NanoJ-Fluidics). We are constantly expanding NanoJ with the aim to improve quantitative analysis and reliability of biomedical microscopy studies .
+Super-Resolution Microscopy has become essential for the study of many nanoscale biological processes. The field generally relies on specialised image analysis tools to routinely process the large volumes of recorded data and robustly extract underlying quantitative information. In recent years, our team has built an image analysis framework for Super-Resolution Microscopy which combines high-performance, open-source and ease of use, which we called NanoJ - a reference to the popular ImageJ software it was developed for. In this paper, we highlight the current capabilities of NanoJ for use in several essential steps of microscopy studies: spatio-temporal alignment of the raw data (NanoJ-Core), Super-Resolution image reconstruction (NanoJ-SRRF), image quality assessment (NanoJ-SQUIRREL), structural modelling (NanoJ-VirusMapper) and control of the sample environment (NanoJ-Fluidics). We are constantly expanding NanoJ with the aim to improve quantitative analysis and reliability of biomedical microscopy studies .
 
 \end {abstract}
 %TC:break main
@@ -79,6 +79,15 @@ Super-Resolution Microscopy has become essential for the study of many nanoscale
 
 \subsection*{NanoJ-Core: Drift Correction}
  During the acquisition of a SRM data there is often a need for the sample to remain static in order to minimise motion blur artefacts and therefore loss of resolution. However, drift commonly occurs in microscopes during acquisition times, often as a result of gradual changes in temperature of system components. While most modern microscopes have an active focus-lock device that stabilises the motion of the sample in the axial direction (focal drift), the sample will still be prone to lateral movement. However, in the case where the raw data is made up of a sequence of consecutive frames acquired rapidly, as is common in SRM methods such as Single Molecule Localization Microscopy (SMLM) \cite{betzig2006imaging,rust2006sub} or Fluctuation Imaging-type approaches \cite{gustafsson2016fast,dertinger2009fast,cox2012bayesian}, this lateral drift can be calculated and analytically corrected via post-processing.
+ 
+  %TC:ignore
+ \begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/Fig2_Drift_Initial.png}
+    \caption{\textbf{Drift correction with NanoJ-Core} \textbf{a)} Composite image of two frames of the same field-of-view with visible drift. \textbf{b)} Cross-correlation map between the two frames shown in a). The vector position of the maximum indicates the linear shift between the two frames. \textbf{c)} Overlay of the two frames after drift correction using NanoJ-Core. \textbf{d)} Typical vertical and horizontal drift curves obtain from 100 consecutive frames.}
+    \label{fig:DriftCorrection}
+ \end{figure}
+ %TC:endignore
 
  The lateral drift in an image at a particular time frame can be assumed to be linear and therefore can be estimated by calculating the cross-correlation matrix (CCM) between a reference frame and the frame at this particular time point. The location of the peak intensity in the CCM determines the linear shift between the two images and is precisely estimated by upscaling the CCM, using a bicubic-spline interpolation, thus achieving subpixel accuracy. Depending on the type of acquisition, the reference frame can either be the first frame of the raw data (for a fixed sample for instance) or the preceding SRM frame (for a live sample). For SMLM datasets with sparse blinking, there will only be a weak correlation across frames, as there is little observable structure conserved between time points. One common strategy to alleviate this low correlation is to add fiduciary landmarks to the sample, such as static fluorescent beads. Alternatively, NanoJ offers an additional analytical methods which consists of temporally binning the dataset, thus increasing the correlation between binned frames and allowing their shift to be precisely estimated \cite{mlodzianoski2011sample}. 
 
@@ -89,23 +98,37 @@ Super-Resolution Microscopy has become essential for the study of many nanoscale
 \subsection*{NanoJ-Core: Channel Alignment}
 
 %TC:ignore
-\begin{figure}[!t]
-    \centering
-    \includegraphics[width=\linewidth]{Figures/ChannelRealignment_v1.png}
-    \caption{\textbf{NanoJ - Channel alignment} Coolio. It's stuff in there !}
-    \label{fig:ChannelAlignment}
-\end{figure}
+%\begin{figure}[!t]
+%    \centering
+ %   \includegraphics[width=\linewidth]{Figures/ChannelRealignment_v1.png}
+  %  \caption{\textbf{NanoJ - Channel alignment} Coolio. It's stuff in there !}
+   % \label{fig:ChannelAlignment}
+%\end{figure}
 %TC:endignore
 
- Images captured with a fluorescence microscope in different spectral channels often appear misaligned, as a result of chromatic aberrations in the optical systems and from using different spectral filters between the channels. While in diffraction-limited microscopy both of these effects can often be ignored, provided they occur at a scale smaller than the diffraction limit, their effect can become substantial in the context of SRM. Even optical components, such as microscope objectives, labelled as corrected for this effect will have limited performance. This leads to an increasingly perceivable discrepancy between spatial structures observed in different spectral channels as resolution increases \cite{erdelyi2013correcting}. It is essential to correct this spectral misalignment in multi-colour SRM studies, especially when it involves the quantification of colocalisation between different structures \cite{bock2007two,van2009multicolor}. Thereby, channel realignment becomes an imperative part of image analysis at these scales because even a channel offset of ten's of nanometres can affect the outcome of the study. Additionally, the shift between different spectral channels often varies non-linearly with the position in the image across the image, which prevents using typical cross-correlation-based approaches, such as the one used by NanoJ-Core Drift Correction.
+ Images captured with a fluorescence microscope in different spectral channels often appear misaligned, as a result of chromatic aberrations in the optical systems and from using different spectral filters between the channels. While in diffraction-limited microscopy both of these effects can often be ignored, provided they occur at a scale smaller than the diffraction limit, their effect can become substantial in the context of SRM. Even optical components, such as microscope objectives, labelled as corrected for this effect will have limited performance. This leads to an increasingly perceivable discrepancy between spatial structures observed in different spectral channels as resolution increases \cite{erdelyi2013correcting}. It is essential to correct this spectral misalignment in multi-colour SRM studies, especially when it involves the quantification of colocalisation between different structures \cite{bock2007two,van2009multicolor,niekamp2017high}. Thereby, channel realignment becomes an imperative part of image analysis at these scales because even a channel offset of ten's of nanometres can affect the outcome of the study. Additionally, the shift between different spectral channels often varies non-linearly with the position in the image across the image, which prevents using typical cross-correlation-based approaches, such as the one used by NanoJ-Core Drift Correction.
  A common approach to estimate the shift is to image a sample showing the same structure across all the relevant wavelength channels, where this structure occupies a large portion of the imaged field-of-view, e.g. a coverslip with a high-density of randomly placed multi-spectral beads. This dataset can be used to extract a non-linear spatial transform for each spectral channel with respect to a reference channel, and these transforms can then be used to re-align all further multi-spectral dataset \cite{arganda2006consistent,annibale2012identification}. Because the correction necessary here is spatially varying across the image, NanoJ takes the approach of breaking the image down into small areas, which are in turn compared to the equivalent area in the reference channel. Locally, the correction can be assumed to be linear and the linear shift can be estimated by finding the cross-correlation peak position as described in the "Drift Correction" section. An inverse distance weighting interpolation \cite{shepard1968two} is used to smoothly determine shift values across the whole field-of-view, including the areas that do not contain any structure. This approach allows us to extract a shift map (in both vertical and horizontal directions) that can be applied to further datasets. The shift maps can be visualised where the intensity in each pixel represents the vertical or horizontal shift associated to the local shift for the corresponding channel (Fig. X). These shift maps have the benefit of easily showing the chromatic distortion across the field-of-view (Fig. X), helping with the assessment of the image quality. 
+ 
+ \begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/Test_Figure_3.png}
+    \caption{\textbf{Multicolour channel alignment with NanoJ - Core} Yes, I know that, ironically, the figure it not aligned !}
+    \label{fig:ChannelAlignment}
+\end{figure}
  
  The channel alignment correction is then achieved on any multi-color dataset by creating a new image representing each channel, where the intensity value for each pixel coordinate corresponds to the intensity value from the original image at the equivalent coordinate corrected for local shift. For the cases where these coordinates are not discrete, a bicubic-spline interpolation is used to recover pixel values in continuous space. Because the shift map can be extrapolated to continuous space, the alignment procedure obtained from diffraction-limited images can also easily be used to correct SRM dataset of any resolution.
 
- Additionally, in some cases where clear individual overlapping structures are present, NanoJ provides a channel alignment solution which can be directly evaluated and performed on the dataset of interest, therefore simplifying the analysis workflow. See Figure (xxx)
-
 \subsection*{NanoJ-SRRF: Live-Cell Super-Resolution Imaging}
  As part of the NanoJ framework, we include our recently developed SRM reconstruction algorithm called Super-Resolution Radial Fluctuations (SRRF), able to extract sub-diffraction information from a short burst of images acquired at high-speed with modern fluorescence microscopes \cite{gustafsson2016fast,culley2018srrf}. SRRF is a purely analytical approach, compared to other SRM methods, it alleviates the need to use toxic photoswitching-inducing buffers \cite{henriques2011palm}, specialised fluorophores \cite{dempsey2011evaluation,henriques2009palm}, damaging high-intensity illumination \cite{waldchen2015light} or specialised equipment \cite{gustafsson2000surpassing,hell1994breaking}.
+ 
+ %TC:ignore
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/Figure5_v1.png}
+    \caption{\textbf{Live-cell super-resolution with NanoJ-SRRF}. \textbf{a)} Comparison of wide-field (left) and SRRF reconstruction (right) obtained from a Cos7 cell expressing UtrCH-GFP. Scale bar: 5 \micro m. \textbf{b)} Time-course of the inset shown in a), obtained from  a continuous imaging at 30 ms exposure (33.3 Hz) and displayed every 30 s. Scale bar: 1 \micro m. \textbf{c)} Colour-coded time course dataset from b). Scale bar: 1 \micro m.}
+    \label{fig:SRRF}
+\end{figure}
+%TC:endignore
  
  SRRF is based on similar principles to SMLM, however it does not rely on the detection of spatio-temporally isolated fluorophore. In comparison, SRRF generates a magnified pixel grid where each pixel value relates to the probability of fluorophores existing in that corresponding region of space. To do so, SRRF calculates the local radial symmetry around each of these pixels, which will be high when a point-spread-function (PSF) profile transiently becomes dominant. The fluctuation of local radial symmetries follows the underlying natural intensity fluctuation of fluorophores, which has a distinct temporal signature to that of noise \cite{dertinger2009fast}. A temporal correlation of radial symmetries at each pixel can then be projected into a final image, where the structures of interest can be better resolved.
  
@@ -152,7 +175,7 @@ VirusMapper has been demonstrated with SIM and stimulated emission depleteion (S
 \begin{figure}[!t]
     \centering
     \includegraphics[width=\linewidth]{Figures/NanoJ_VirusMapperFigure_rot.png}
-    \caption{\textbf{Quantitative SPA-based modelling with VirusMapper} \textbf{a) Images of individual vaccinia particles and labelled for L4 (core), F17 (lateral body, LB) and A17 (membrane, mem.) with VirusMapper models of the three channels produced in parallel. Scale bars 200nm.} \textbf{b)Images of individual \emph{Sulfolobus} cells labelled for the S-layer (S) and ESCRT-III (E-III) with VirusMapper models of three different orientations of the cells. Scale bars 1\micro m. }}
+    \caption{\textbf{Quantitative SPA-based modelling with NanoJ-VirusMapper} \textbf{a) Images of individual vaccinia particles and labelled for L4 (core), F17 (lateral body, LB) and A17 (membrane, mem.) with VirusMapper models of the three channels produced in parallel. Scale bars 200nm.} \textbf{b)Images of individual \emph{Sulfolobus} cells labelled for the S-layer (S) and ESCRT-III (E-III) with VirusMapper models of three different orientations of the cells. Scale bars 1\micro m. }}
     \label{fig:VirusMapper}
 \end{figure}
 
